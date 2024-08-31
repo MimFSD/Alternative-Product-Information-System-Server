@@ -8,7 +8,6 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 
-// middleware 
 app.use(cors({
     origin: [
         'http://localhost:5173',
@@ -31,7 +30,6 @@ const client = new MongoClient(uri, {
     }
 });
 
-// middleware
 
 const verifyToken = async(req, res, next)=>{
     const token = req.cookies?.token;
