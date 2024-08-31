@@ -8,6 +8,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 
+// middleware 
 app.use(cors({
     origin: [
         'http://localhost:5173',
@@ -30,6 +31,7 @@ const client = new MongoClient(uri, {
     }
 });
 
+// middleware
 
 const verifyToken = async(req, res, next)=>{
     const token = req.cookies?.token;
@@ -56,7 +58,6 @@ async function run() {
         // auth related api
         app.post('/jwt', async (req, res) => {
             const user = req.body;
-            // console.log('user login for token', user)
             const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1d' });
             res
                 .cookie('token', token, {
@@ -69,15 +70,11 @@ async function run() {
 
         app.post('/logout', async (req, res) => {
             const user = req.body;
-            // console.log('logout user :', user)
             res
                 .clearCookie('token', { maxAge: 0 })
                 .send({ success: true })
         })
 
-
-
-        // crud for recommendation
         app.get('/recommendation', async (req, res) => {
             let query = {};
             if (req.query?.queryId) {
