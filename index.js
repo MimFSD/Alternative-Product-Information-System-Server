@@ -114,12 +114,10 @@ async function run() {
             res.send(result)
         })
 
-        // crud for queries
         app.get('/queries', async(req,res)=>{
             const result = await queryCollections.find().sort({_id: -1}).toArray();
             res.send(result)
         })
-        // search product
         app.get('/searchProduct/:productName', async(req,res)=>{
             const product = req.params.productName;
             console.log(product)
@@ -132,8 +130,6 @@ async function run() {
             if(req.user.email !== req.params.email){
                 return res.status(403).send({message: 'forbidden'})
             }
-            // console.log(req.user.email)
-            // console.log(req.params.email)
             const email = req.params.email;
             const query = { userEmail: email };
             const result = await queryCollections.find(query).sort({_id: -1}).toArray();
@@ -147,12 +143,19 @@ async function run() {
             res.send(result)
         })
 
+
+
+
+
         app.post('/queries', async (req, res) => {
             const queries = req.body;
             console.log(queries);
             const result = await queryCollections.insertOne(queries);
             res.send(result)
         })
+
+
+
 
         app.put('/queries/:id', async (req, res) => {
             const id = req.params.id;
@@ -179,6 +182,8 @@ async function run() {
             res.send(result)
         })
 
+
+        
         // Connect the client to the server	(optional starting in v4.7)
         // await client.connect();
         // Send a ping to confirm a successful connection
