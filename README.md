@@ -1,4 +1,4 @@
-# Alternative Product Information System Backend
+<!-- # Alternative Product Information System Backend
 
 Welcome to the backend repository of the Alternative Product Information System project! This repository contains the backend server code built using Node.js, Express.js, and MongoDB.
 
@@ -45,4 +45,4 @@ To install and run Alternative-Product-Information-System-Server locally, follow
 
    ```
    npm install
-   ```
+   ``` -->
