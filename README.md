@@ -1,4 +1,8 @@
-Server Site of Alternative Product system
+* Server Site 
+** Next-Generation Product Catalog and Data Integration Hub
+* Alternative Product Information System
+
+
 
 
 Server .env   ==============
