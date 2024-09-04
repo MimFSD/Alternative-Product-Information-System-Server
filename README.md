@@ -1,3 +1,10 @@
+Server Site of Alternative Product system
+
+
+
+
+
+
 <!-- # Alternative Product Information System Backend
 
 Welcome to the backend repository of the Alternative Product Information System project! This repository contains the backend server code built using Node.js, Express.js, and MongoDB.
@@ -32,7 +39,7 @@ To install and run Alternative-Product-Information-System-Server locally, follow
 1. Clone the repository:
 
    ```
-   git clone https://github.com/ataullah1/Alternative-Product-Information-System-Server.git
+   git clone url
    ```
 
 2. Navigate into the project directory:
