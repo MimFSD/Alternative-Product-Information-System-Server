@@ -156,3 +156,83 @@ async function run() {
       const result = await queriesCallection.findOne(query);
       res.send(result);
     });
+
+      //  Update my added query data
+      app.put('/my-query-update/:id', verifyToken, async (req, res) => {
+        const id = req.params.id;
+        const filter = { _id: new ObjectId(id) };
+        const data = req.body;
+        // console.log(id, { ...data });
+        const updateDoc = {
+          $set: { ...data },
+        };
+        const result = await queriesCallection.updateOne(filter, updateDoc);
+        res.send(result);
+      });
+  
+      //  Update Count recomedation product in query data
+      app.patch(
+        '/recomendaton-count-update/:id',
+        verifyToken,
+        async (req, res) => {
+          const id = req.params.id;
+          const filter = { _id: new ObjectId(id) };
+          const result = await queriesCallection.updateOne(filter, {
+            $inc: { recommendationCount: 1 },
+          });
+          res.send(result);
+        }
+      );
+      //  Update Count recomedation product in query data
+      app.patch(
+        '/recomendaton-countdecreases-update/:id',
+        verifyToken,
+        async (req, res) => {
+          const id = req.params.id;
+          const filter = { _id: new ObjectId(id) };
+          const result = await queriesCallection.updateOne(filter, {
+            $inc: { recommendationCount: -1 },
+          });
+          res.send(result);
+        }
+      );
+  
+      //  Delete my added query data
+      app.delete('/my-queries-delete/:id', verifyToken, async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const data = await queriesCallection.deleteOne(query);
+        res.send(data);
+      });
+  
+      //  Recommendation Collection part ==============
+  
+      // Recommendation single  data adding
+      app.post('/recommendation', verifyToken, async (req, res) => {
+        const data = req.body;
+        // console.log(data);
+        const result = await recommendationCallection.insertOne(data);
+        res.send(result);
+      });
+      // All Recommendation data for login user
+      app.get('/my-recommendations/:email', verifyToken, async (req, res) => {
+        const email = req.params.email;
+        const filter = { recUserEmail: email };
+        const result = await recommendationCallection
+          .find(filter)
+          .sort({ _id: -1 })
+          .toArray();
+        res.send(result);
+      });
+  
+      // All Recommendation for me data for login user
+      app.get('/recommendation-for-me/:email', verifyToken, async (req, res) => {
+        const email = req.params.email;
+        const filter = { userEmails: email };
+        const result = await recommendationCallection
+          .find(filter)
+          .sort({ _id: -1 })
+          .toArray();
+        res.send(result);
+      });
+  
