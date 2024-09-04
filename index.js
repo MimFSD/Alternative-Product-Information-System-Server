@@ -9,38 +9,38 @@ const port = process.env.PORT || 9000;
 
 // Middlewares============
 const options = {
-    origin: [
-      'http://localhost:5173',
-      'https://altquery.web.app',
-      'https://altquery.firebaseapp.com 1QQQQQQQQQQ23W22222222222422222222222222242424222222222222222222222222222222222222222222222222222222                        ',
-    ],
-    credentials: true,
-    optionsSuccessStatus: 200,
-  };
-  app.use(cors(options));
-  app.use(express.json());
-  app.use(cookieParser());
-  // Veryfy JWT token
-  const verifyToken = (req, res, next) => {
-    const token = req.cookies.token;
-    // console.log(token);
-    if (!token) {
-      return res.status(401).send({ message: 'Unauthorized access' });
-    }
-    if (token) {
-      jwt.verify(token, process.env.SECRET_TOKEN, (err, decoded) => {
-        if (err) {
-          console.log(err);
-          return res.status(401).send({ message: 'Unauthorized access' });
-        }
-        // console.log(decoded);
-        req.user = decoded;
-        next();
-      });
-    }
-  };
+  origin: [
+    'http://localhost:5173',
+    'https://altquery.web.app',
+    'https://altquery.firebaseapp.com 1QQQQQQQQQQ23W22222222222422222222222222242424222222222222222222222222222222222222222222222222222222                        ',
+  ],
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
+app.use(cors(options));
+app.use(express.json());
+app.use(cookieParser());
+// Veryfy JWT token
+const verifyToken = (req, res, next) => {
+  const token = req.cookies.token;
+  // console.log(token);
+  if (!token) {
+    return res.status(401).send({ message: 'Unauthorized access' });
+  }
+  if (token) {
+    jwt.verify(token, process.env.SECRET_TOKEN, (err, decoded) => {
+      if (err) {
+        console.log(err);
+        return res.status(401).send({ message: 'Unauthorized access' });
+      }
+      // console.log(decoded);
+      req.user = decoded;
+      next();
+    });
+  }
+};
 
-  const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.htex290.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.htex290.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
@@ -157,83 +157,85 @@ async function run() {
       res.send(result);
     });
 
-      //  Update my added query data
-      app.put('/my-query-update/:id', verifyToken, async (req, res) => {
+    //  Update my added query data
+    app.put('/my-query-update/:id', verifyToken, async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const data = req.body;
+      // console.log(id, { ...data });
+      const updateDoc = {
+        $set: { ...data },
+      };
+      const result = await queriesCallection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
+    //  Update Count recomedation product in query data
+    app.patch(
+      '/recomendaton-count-update/:id',
+      verifyToken,
+      async (req, res) => {
         const id = req.params.id;
         const filter = { _id: new ObjectId(id) };
-        const data = req.body;
-        // console.log(id, { ...data });
-        const updateDoc = {
-          $set: { ...data },
-        };
-        const result = await queriesCallection.updateOne(filter, updateDoc);
+        const result = await queriesCallection.updateOne(filter, {
+          $inc: { recommendationCount: 1 },
+        });
         res.send(result);
-      });
-  
-      //  Update Count recomedation product in query data
-      app.patch(
-        '/recomendaton-count-update/:id',
-        verifyToken,
-        async (req, res) => {
-          const id = req.params.id;
-          const filter = { _id: new ObjectId(id) };
-          const result = await queriesCallection.updateOne(filter, {
-            $inc: { recommendationCount: 1 },
-          });
-          res.send(result);
-        }
-      );
-      //  Update Count recomedation product in query data
-      app.patch(
-        '/recomendaton-countdecreases-update/:id',
-        verifyToken,
-        async (req, res) => {
-          const id = req.params.id;
-          const filter = { _id: new ObjectId(id) };
-          const result = await queriesCallection.updateOne(filter, {
-            $inc: { recommendationCount: -1 },
-          });
-          res.send(result);
-        }
-      );
-  
-      //  Delete my added query data
-      app.delete('/my-queries-delete/:id', verifyToken, async (req, res) => {
+      }
+    );
+    //  Update Count recomedation product in query data
+    app.patch(
+      '/recomendaton-countdecreases-update/:id',
+      verifyToken,
+      async (req, res) => {
         const id = req.params.id;
-        const query = { _id: new ObjectId(id) };
-        const data = await queriesCallection.deleteOne(query);
-        res.send(data);
-      });
-  
-      //  Recommendation Collection part ==============
-  
-      // Recommendation single  data adding
-      app.post('/recommendation', verifyToken, async (req, res) => {
-        const data = req.body;
-        // console.log(data);
-        const result = await recommendationCallection.insertOne(data);
+        const filter = { _id: new ObjectId(id) };
+        const result = await queriesCallection.updateOne(filter, {
+          $inc: { recommendationCount: -1 },
+        });
         res.send(result);
-      });
-      // All Recommendation data for login user
-      app.get('/my-recommendations/:email', verifyToken, async (req, res) => {
-        const email = req.params.email;
-        const filter = { recUserEmail: email };
-        const result = await recommendationCallection
-          .find(filter)
-          .sort({ _id: -1 })
-          .toArray();
-        res.send(result);
-      });
-  
-      app.get('/recommendation-for-me/:email', verifyToken, async (req, res) => {
-        const email = req.params.email;
-        const filter = { userEmails: email };
-        const result = await recommendationCallection
-          .find(filter)
-          .sort({ _id: -1 })
-          .toArray();
-        res.send(result);
-      });
+      }
+    );
+
+    //  Delete my added query data
+    app.delete('/my-queries-delete/:id', verifyToken, async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const data = await queriesCallection.deleteOne(query);
+      res.send(data);
+    });
+
+    //  Recommendation Collection part ==============
+
+    // Recommendation single  data adding
+    app.post('/recommendation', verifyToken, async (req, res) => {
+      const data = req.body;
+      // console.log(data);
+      const result = await recommendationCallection.insertOne(data);
+      res.send(result);
+    });
+    // All Recommendation data for login user
+    app.get('/my-recommendations/:email', verifyToken, async (req, res) => {
+      const email = req.params.email;
+      const filter = { recUserEmail: email };
+      const result = await recommendationCallection
+        .find(filter)
+        .sort({ _id: -1 })
+        .toArray();
+      res.send(result);
+    });
+
+    // All Recommendation for me data for login user
+    app.get('/recommendation-for-me/:email', verifyToken, async (req, res) => {
+      const email = req.params.email;
+      const filter = { userEmails: email };
+      const result = await recommendationCallection
+        .find(filter)
+        .sort({ _id: -1 })
+        .toArray();
+      res.send(result);
+    });
+
     // Recommendation data get for only opened query
     app.get('/recommended-query/:id', async (req, res) => {
       const id = req.params.id;

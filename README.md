@@ -1,68 +1,48 @@
-*  Alternative Product Information System
-*  Server Site
-*  Backend
+# Alternative Product Information System Backend
 
-Server .env   ==============
+Welcome to the backend repository of the Alternative Product Information System project! This repository contains the backend server code built using Node.js, Express.js, and MongoDB.
 
-```
-DB_USER=
-DB_PASS=
-```
+## Key Features
 
-Client .env   ================
+1. **User Product Posting**: Users can post pictures and details (name, brand, query) of products they do not like.
+2. **Recommendations**: Users can receive recommendations for better alternatives based on the products they dislike.
+3. **Secure Authentication**: Utilizes JWT tokens for secure user authentication, ensuring only authorized users can access certain features.
+4. **CRUD Operations**: Provides endpoints for Create, Read, Update, and Delete operations for managing posts and recommendations.
+5. **Data Separation**: Backend API endpoints are structured to handle post data, recommendation data, and user authentication separately.
 
+## Technologies Used
 
-```
-VITE_APIKEY ============
-VITE_AUTHDOMAIN=altquery.firebaseapp.com
-VITE_PROJECTID=altquery
-VITE_STORAGEBUCKET=altquery.appspot.com
-VITE_MESSAGINGSENDERID=
-VITE_APPID=
+- **Node.js**: JavaScript runtime for server-side development.
+- **Express.js**: Web application framework for Node.js, used for building the RESTful API.
+- **MongoDB**: NoSQL database for storing user and product data.
+- **JWT**: JSON Web Tokens for secure authentication.
+- **Other npm Packages**: Used for various functionalities like data validation, error handling, etc.
 
-VITE_IMGBB_API=7ad04da7b55bd8e224c5ca06e4112249
+## Project Structure
 
-# VITE_API_URL='http://localhost:9000'
-# VITE_API_URL='https://alt-query-server.vercel.app'
-```
+The project is structured to ensure clarity and maintainability. Here’s an overview:
 
-Server Some gide ====================____ --
+- **src/**: Contains all the source code.
+  - **index.js**: Entry point of the application.
+  - **middleware/**: Middleware functions.
+  - **others**
 
-```
-vercel
-vercel --prod
-```
+To install and run Alternative-Product-Information-System-Server locally, follow these steps:
 
-- Let's create cookie options for both the production and local server
+1. Clone the repository:
 
-```
-const cookieOptions = {
-  httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-};
-//localhost:5000 and localhost:5173 are treated as same site.  so sameSite value must be strict in the development server.  in production, sameSite will be none
-// in development server secure will false.  in production secure will be true
-```
+   ```
+   git clone https://github.com/ataullah1/Alternative-Product-Information-System-Server.git
+   ```
 
-- now we can use this object for the cookie option to modify cookies
+2. Navigate into the project directory:
 
-```
-//creating Token
-app.post("/jwt", logger, async (req, res) => {
-  const user = req.body;
-  console.log("user for token", user);
-  const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
+   ```
+   cd Alternative-Product-Information-System-Server
+   ```
 
-  res.cookie("token", token, cookieOptions).send({ success: true });
-});
+3. Install dependencies using npm:
 
-//clearing Token
-app.post("/logout", async (req, res) => {
-  const user = req.body;
-  console.log("logging out", user);
-  res
-    .clearCookie("token", { ...cookieOptions, maxAge: 0 })
-    .send({ success: true });
-});
-```
+   ```
+   npm install
+   ```
