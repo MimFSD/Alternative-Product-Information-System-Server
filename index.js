@@ -92,7 +92,6 @@ async function run() {
             res.send(result)
         })
 
-        // recommendation for me
         app.get('/recommendForMe/:email', async (req, res) => {
             const email = req.params.email;
             const query = { creatorEmail: email };
@@ -142,9 +141,6 @@ async function run() {
             const result = await queryCollections.findOne(query);
             res.send(result)
         })
-
-
-
 
 
         app.post('/queries', async (req, res) => {
