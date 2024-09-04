@@ -225,7 +225,6 @@ async function run() {
         res.send(result);
       });
   
-      // All Recommendation for me data for login user
       app.get('/recommendation-for-me/:email', verifyToken, async (req, res) => {
         const email = req.params.email;
         const filter = { userEmails: email };
@@ -237,42 +236,43 @@ async function run() {
       });
     // Recommendation data get for only opened query
     app.get('/recommended-query/:id', async (req, res) => {
+      const id = req.params.id;
+      // console.log(id);
+      // return;
+      const filter = { queryId: id };
+      const data = await recommendationCallection
+        .find(filter)
+        .sort({ _id: -1 })
+        .toArray();
+      res.send(data);
+    });
+
+    // My Recommendations single data delete
+    app.delete(
+      '/my-recommendations-delete/:id',
+      verifyToken,
+      async (req, res) => {
         const id = req.params.id;
-        // console.log(id);
-        // return;
-        const filter = { queryId: id };
-        const data = await recommendationCallection
-          .find(filter)
-          .sort({ _id: -1 })
-          .toArray();
-        res.send(data);
-      });
-  
-      // My Recommendations single data delete
-      app.delete(
-        '/my-recommendations-delete/:id',
-        verifyToken,
-        async (req, res) => {
-          const id = req.params.id;
-          const filter = { _id: new ObjectId(id) };
-          const result = await recommendationCallection.deleteOne(filter);
-          res.send(result);
-        }
-      );
-  
-      //  End all work============
-    } catch (err) {
-      console.log(err);
-    } finally {
-     
-    }
+        const filter = { _id: new ObjectId(id) };
+        const result = await recommendationCallection.deleteOne(filter);
+        res.send(result);
+      }
+    );
+
+    //  End all work============
+  } catch (err) {
+    console.log(err);
+  } finally {
+    // Ensures that the client will close when you finish/error
+    // await client.close();
   }
-  run().catch(console.dir);
-  
-  app.get('/', (req, res) => {
-    res.send('Hello World!');
-  });
-  
-  app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
-  });
+}
+run().catch(console.dir);
+
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`);
+});
