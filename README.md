@@ -41,11 +41,8 @@ The **Next-Generation Product Catalog and Data Integration Hub** is a backend se
 - **Express.js** - Web framework for building the REST API
 - **MongoDB** - NoSQL database for storing product data
 - **Mongoose** - ODM library for MongoDB
-- **Redis** - In-memory data structure store for caching and message brokering
-- **RabbitMQ** - Messaging broker for handling asynchronous data processing
 - **Elasticsearch** - Search engine for advanced search and filtering capabilities
 - **JWT (JSON Web Tokens)** - Authentication and authorization
-- **Winston** - Logging library
 
 ## Architecture
 
@@ -62,9 +59,7 @@ The server application follows a microservices-oriented architecture, allowing i
 
 - [Node.js](https://nodejs.org/) (v14+)
 - [MongoDB](https://www.mongodb.com/) (local or cloud instance)
-- [Redis](https://redis.io/)
-- [RabbitMQ](https://www.rabbitmq.com/)
-- [Elasticsearch](https://www.elastic.co/)
+
 
 ### Steps
 
