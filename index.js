@@ -7,9 +7,7 @@ const cookieParser = require('cookie-parser');
 const app = express();
 const port = process.env.PORT || 9000;
 
-
-
-
+// Middlewares============
 const options = {
   origin: [
     'http://localhost:5173',
